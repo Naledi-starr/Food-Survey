@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Survey Results</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Lifestyle Surveys</a>
+            <div class="navbar-nav">
+                <a class="nav-link" href="/survey">Fill Out Survey</a>
+                <a class="nav-link active" href="/results">View Survey Results</a>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        <img src="{{ url_for('static', filename='Pasta1.jpg') }}" class="img-fluid header-image mb-3" alt="Survey Results Header">
+        <h1>Survey Results</h1>
+        {% if no_data %}
+            <div class="alert alert-info" role="alert">
+                No Surveys Available
+            </div>
+        {% else %}
+            <table class="table">
+                <tr>
+                    <th>Total Number of Surveys:</th>
+                    <td>{{ total_surveys }}</td>
+                </tr>
+                <tr>
+                    <th>Average Age:</th>
+                    <td>{{ avg_age }}</td>
+                </tr>
+                <tr>
+                    <th>Oldest Person:</th>
+                    <td>{{ oldest_age }}</td>
+                </tr>
+                <tr>
+                    <th>Youngest Person:</th>
+                    <td>{{ youngest_age }}</td>
+                </tr>
+                <tr>
+                    <th>Percentage of People Who Like Pizza:</th>
+                    <td>
+                        <!-- <img src="{{ url_for('static', filename='Pizza1.jpg') }}" class="results-image" alt="Pizza">  -->
+                        {{ food_percentages['Pizza'] }}%
+                    </td>
+                </tr>
+                <tr>
+                    <th>Percentage of People Who Like Pasta:</th>
+                    <td>
+                        <!-- <img src="{{ url_for('static', filename='Pasta2.jpg') }}" class="results-image" alt="Pasta">  -->
+                        {{ food_percentages['Pasta'] }}%
+                    </td>
+                </tr>
+                <tr>
+                    <th>Percentage of People Who Like Pap and Wors:</th>
+                    <td>
+                        <!-- <img src="{{ url_for('static', filename='PaW2.jpg') }}" class="results-image" alt="Pap and Wors">  -->
+                        {{ food_percentages['Pap and Wors'] }}%
+                    </td>
+                </tr>
+                <tr>
+                    <th>Percentage of People Who Like Other:</th>
+                    <td>{{ food_percentages['Other'] }}%</td>
+                </tr>
+                <tr>
+                    <th>People Who Like to Watch Movies (Avg Rating):</th>
+                    <td>{{ avg_ratings['movies'] }}</td>
+                </tr>
+                <tr>
+                    <th>People Who Like to Listen to Radio (Avg Rating):</th>
+                    <td>{{ avg_ratings['radio'] }}</td>
+                </tr>
+                <tr>
+                    <th>People Who Like to Eat Out (Avg Rating):</th>
+                    <td>{{ avg_ratings['eating_out'] }}</td>
+                </tr>
+                <tr>
+                    <th>People Who Like to Watch TV (Avg Rating):</th>
+                    <td>{{ avg_ratings['tv'] }}</td>
+                </tr>
+            </table>
+        {% endif %}
+    </div>
+</body>
+</html>
