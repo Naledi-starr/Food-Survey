@@ -177,5 +177,6 @@ Credits
 * **Design Inspiration:** Burberry color palette
 * **Technologies:** Flask, Bootstrap, SQLite
 * **Images:** ![Home Page](image.png), ![Result 1](R1.png) ![Result 2](R2.png) ![Survey1](S1.png) ![Survey 2](S2.png)
+  
+For issues or feedback, contact [nmmotswiane@gmail.com](mailto:nmmotswiane@gmail.com).
 
-Screenshot of the vibrant survey page (replace with actual image): For issues or feedback, contact [nmmotswiane@gmail.com](mailto:nmmotswiane@gmail.com).
