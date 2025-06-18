@@ -1,104 +1,176 @@
 body {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #F5F5DC;
+    color: #000000;
     margin: 0;
-    padding: 20px;
-    background-color: #F5F5DC; /* Burberry beige */
-    color: #000000;
+    padding: 0;
 }
-.container {
-    max-width: 900px;
-    margin: auto;
-    background-color: #FFFFFF;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    border: 1px solid #D2B48C; /* Burberry tan accent */
+
+.navbar-dark {
+    background-color: #000000;
 }
-.form-check {
-    margin-bottom: 15px;
-}
-h1, h3 {
-    color: #000000;
-    font-weight: 500;
-}
-.navbar {
-    margin-bottom: 30px;
-    background-color: #000000 !important;
-}
+
 .navbar-brand, .nav-link {
     color: #FFFFFF !important;
-    font-weight: 400;
 }
-.navbar-brand:hover, .nav-link:hover {
-    color: #D2B48C !important; /* Tan hover effect */
+
+.nav-link:hover {
+    color: #D2B48C !important;
 }
-.table th, .table td {
-    vertical-align: middle;
-    border-color: #D2B48C;
+
+.nav-link.active {
+    color: #8B6F47 !important;
 }
+
+.header-image {
+    width: 100%;
+    height: auto;
+    max-height: 250px;
+    object-fit: cover;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.food-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
 .alert {
     margin-top: 15px;
     background-color: #F5F5DC;
     border-color: #D2B48C;
     color: #000000;
 }
-.header-image {
-    max-height: 250px;
-    width: 100%;
-    object-fit: cover;
-    border-radius: 8px;
+
+#errorContainer.alert-danger:not(.d-none) {
+    background-color: #FF0000;
+    color: #FFFFFF;
+    border-color: #CC0000;
+}
+
+.field-required {
+    font-style: italic;
+    font-size: 0.8em;
+    display: block;
+    margin-top: 5px;
+}
+
+.form-check {
+    margin-bottom: 8px;
+}
+
+.form-check-input {
+    border-color: #8B6F47;
+}
+
+.form-check-input:checked {
+    background-color: #8B6F47;
+    border-color: #8B6F47;
+}
+
+.hero-section, .survey-hero, .results-hero {
+    background-color: #F5F5DC;
+    padding: 50px 20px;
+    border-bottom: 2px solid #D2B48C;
+}
+
+.main-heading {
+    font-size: 3rem;
+    color: #8B6F47;
     margin-bottom: 20px;
 }
-.food-image {
-    max-width: 100px;
-    height: auto;
-    border-radius: 5px;
-    margin: 5px;
-    animation: pulse 2s infinite ease-in-out; /* Add pulsing animation */
+
+.intro-text {
+    font-size: 1.5rem;
+    color: #000000;
+    margin-bottom: 30px;
 }
-.survey-icon {
-    max-width: 60px;
-    height: auto;
+
+.cta-button {
+    font-size: 1.25rem;
+    padding: 10px 20px;
+    background-color: #000000;
+    border-color: #D2B48C;
+    color: #FFFFFF;
 }
-.results-image {
-    max-width: 80px;
-    height: auto;
-    vertical-align: middle;
+
+.cta-button:hover {
+    background-color: #D2B48C;
+    color: #000000;
 }
-/* Custom radio button styling */
-.form-check-input[type="radio"] {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #D2B48C; /* Burberry tan border */
-    border-radius: 50%;
+
+.about-section {
     background-color: #FFFFFF;
-    position: relative;
-    cursor: pointer;
+    padding: 40px 20px;
+    border: 2px solid #D2B48C;
+    border-radius: 10px;
 }
-.form-check-input[type="radio"]:checked {
-    background-color: #8B6F47; /* Brown for checked state */
+
+.sub-heading {
+    font-size: 2rem;
+    color: #8B6F47;
+    margin-bottom: 15px;
 }
-.form-check-input[type="radio"]:checked::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 10px;
-    height: 10px;
-    background-color: #FFFFFF; /* White center dot */
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
+
+.secondary-text {
+    font-size: 1rem;
+    color: #000000;
 }
-.form-check-input[type="radio"]:focus {
-    outline: none;
-    box-shadow: 0 0 5px rgba(139, 111, 71, 0.5); /* Brown focus ring */
+
+.food-icon {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 5px;
 }
-/* Animation keyframes */
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
+
+.food-icon-placeholder {
+    width: 40px;
+    height: 40px;
+    background-color: #D2B48C;
+    border-radius: 5px;
+}
+
+.btn-brown {
+    background-color: #8B6F47;
+    border-color: #8B6F47;
+    color: #FFFFFF;
+    transition: all 0.3s ease;
+}
+
+.btn-brown:hover {
+    background-color: #D2B48C;
+    color: #000000;
+}
+
+.results-content, .survey-content {
+    padding: 20px;
+}
+
+.no-data-card, .summary-card, .foods-card, .ratings-card, .form-card, .success-card {
+    border: 2px solid #D2B48C;
+    border-radius: 10px;
+    background-color: #FFFFFF;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.summary-text {
+    font-size: 1.5rem;
+    color: #000000;
+    margin-bottom: 10px;
+}
+
+.progress-bar.bg-brown {
+    background-color: #8B6F47;
+}
+
+.form-control {
+    border-color: #D2B48C;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.form-label {
+    font-size: 1.25rem;
+    color: #8B6F47;
 }

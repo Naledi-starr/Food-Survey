@@ -17,6 +17,8 @@ def init_db():
             tv_rating INTEGER
         )
     ''')
+
+    
     conn.commit()
     conn.close()
 

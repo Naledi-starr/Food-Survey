@@ -1,13 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 import sqlite3
-from datetime import datetime
-from dotenv import load_dotenv
-import os
-
+from datetime import datetime, date
 
 app = Flask(__name__)
-load_dotenv()
-app.secret_key = os.getenv('SECRET_KEY')
+app.secret_key = 'temporary-key-1234567890abcdef'  # Temporary for submission
 
 def get_db_connection():
     conn = sqlite3.connect('survey.db')
@@ -21,32 +17,37 @@ def home():
 @app.route('/survey', methods=['GET', 'POST'])
 def survey():
     if request.method == 'POST':
-        # Get form data
         full_name = request.form.get('full_name')
         email = request.form.get('email')
         date_of_birth = request.form.get('date_of_birth')
         contact_number = request.form.get('contact_number')
-        favorite_foods = ','.join(request.form.getlist('favorite_foods'))  # Handle multiple checkboxes
+        favorite_foods = ','.join(request.form.getlist('favorite_foods'))
         movies_rating = request.form.get('movies_rating')
         radio_rating = request.form.get('radio_rating')
         eating_out_rating = request.form.get('eating_out_rating')
         tv_rating = request.form.get('tv_rating')
 
-        # Server-side validation
         errors = []
+        dob_invalid = False
         if not all([full_name, email, date_of_birth, contact_number]):
             errors.append('All personal details fields are required.')
         
-        # Validate age
-        try:
-            dob = datetime.strptime(date_of_birth, '%Y-%m-%d')
-            age = (datetime.now() - dob).days / 365.25
-            if age < 5 or age > 120:
-                errors.append('Age must be between 5 and 120 years.')
-        except ValueError:
-            errors.append('Invalid date of birth format.')
+        if date_of_birth:
+            try:
+                dob = datetime.strptime(date_of_birth, '%Y-%m-%d').date()
+                today = date.today()
+                if dob >= today:
+                    errors.append('Date of birth cannot be today or in the future.')
+                    dob_invalid = True
+                else:
+                    age = (today - dob).days / 365.25
+                    if age < 5 or age > 120:
+                        errors.append('Age must be between 5 and 120 years.')
+                        dob_invalid = True
+            except ValueError:
+                errors.append('Invalid date of birth format.')
+                dob_invalid = True
 
-        # Validate ratings
         if not all([movies_rating, radio_rating, eating_out_rating, tv_rating]):
             errors.append('All rating questions must be answered.')
         else:
@@ -60,9 +61,12 @@ def survey():
         if errors:
             for error in errors:
                 flash(error, 'error')
-            return render_template('survey.html')  # Stay on survey page for errors
+            # Preserve form data, clear DOB if invalid
+            form_data = request.form.to_dict()
+            if dob_invalid:
+                form_data['date_of_birth'] = ''
+            return render_template('survey.html', form_data=form_data)
 
-        # Save to database
         conn = get_db_connection()
         conn.execute('''
             INSERT INTO surveys (full_name, email, date_of_birth, contact_number, favorite_foods,
@@ -72,10 +76,10 @@ def survey():
               movies_rating, radio_rating, eating_out_rating, tv_rating))
         conn.commit()
         conn.close()
-        flash('Survey submitted successfully!', 'success')
-        return redirect(url_for('home'))  # Redirect to home page on success
+        flash('Thank you for submitting your survey!', 'success')
+        return render_template('survey.html', form_data=request.form.to_dict())
 
-    return render_template('survey.html')
+    return render_template('survey.html', form_data={})
 
 @app.route('/results')
 def results():
@@ -87,18 +91,16 @@ def results():
         conn.close()
         return render_template('results.html', no_data=True)
     
-    # Calculate ages
     ages = []
     for survey in surveys:
-        dob = datetime.strptime(survey['date_of_birth'], '%Y-%m-%d')
-        age = (datetime.now() - dob).days // 365  # Integer division for whole number age
+        dob = datetime.strptime(survey['date_of_birth'], '%Y-%m-%d').date()
+        age = (date.today() - dob).days // 365
         ages.append(age)
     
-    avg_age = int(sum(ages) // len(ages)) if ages else 0  # Whole number average
+    avg_age = int(sum(ages) // len(ages)) if ages else 0
     oldest_age = int(max(ages)) if ages else 0
     youngest_age = int(min(ages)) if ages else 0
     
-    # Calculate food percentages
     food_counts = {'Pizza': 0, 'Pasta': 0, 'Pap and Wors': 0, 'Other': 0}
     for survey in surveys:
         foods = survey['favorite_foods'].split(',') if survey['favorite_foods'] else []
@@ -110,7 +112,6 @@ def results():
         food: round((count / total_surveys) * 100, 1) for food, count in food_counts.items()
     }
     
-    # Calculate average ratings
     avg_ratings = {
         'movies': round(sum(survey['movies_rating'] for survey in surveys) / total_surveys, 1),
         'radio': round(sum(survey['radio_rating'] for survey in surveys) / total_surveys, 1),

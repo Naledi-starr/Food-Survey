@@ -1,23 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Fill Out Survey</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <head>
+        <title>Fill Out Survey</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <script>
+        function validateForm() {
+            const form = document.forms["surveyForm"];
+            const requiredFields = ['full_name', 'email', 'date_of_birth', 'contact_number'];
+            for (let field of requiredFields) {
+                if (!form[field].value) {
+                    alert(`${field.replace('_', ' ').toUpperCase()} is required.`);
+                    return false;
+                }
+            }
+            const ratings = ['movies_rating', 'radio_rating', 'eating_out_rating', 'tv_rating'];
+            for (let rating of ratings) {
+                if (!form[rating].value) {
+                    alert(`Please select a rating for ${rating.replace('_rating', '').toUpperCase().replace('_', ' ')}.`);
+                    return false;
+                }
+            }
+            return true;
+        }
+    </script>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">Lifestyle Surveys</a>
             <div class="navbar-nav">
-                <a class="nav-link active" href="/survey">Fill Out Survey</a>
+                <a class="nav-link" href="/survey">Fill Out Survey</a>
                 <a class="nav-link" href="/results">View Survey Results</a>
             </div>
         </div>
     </nav>
     <div class="container mt-4">
-        <img src="{{ url_for('static', filename='PaW2.jpg') }}" class="img-fluid header-image mb-3" alt="Survey Header">
-        <h1>Fill Out Survey</h1>
+        <img src="{{ url_for('static', filename='PaW2.jpg') }}" class="header-image img-fluid" alt="Survey Header">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -27,123 +48,98 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        <form id="surveyForm" method="POST" action="/survey" onsubmit="return validateForm()">
-            <h3>Personal Details</h3>
-            <div class="mb-3">
-                <label for="full_name" class="form-label">Full Name</label>
-                <input type="text" class="form-control" id="full_name" name="full_name" required>
-            </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" name="email" required>
-            </div>
-            <div class="mb-3">
-                <label for="date_of_birth" class="form-label">Date of Birth</label>
-                <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" required>
-            </div>
-            <div class="mb-3">
-                <label for="contact_number" class="form-label">Contact Number</label>
-                <input type="text" class="form-control" id="contact_number" name="contact_number" required>
-            </div>
-            <h3>Favorite Food</h3>
-            <div class="mb-3 d-flex align-items-center">
-                <div class="form-check me-3">
-                    <input type="checkbox" class="form-check-input" id="pizza" name="favorite_foods" value="Pizza">
-                    <label class="form-check-label" for="pizza">Pizza</label>
+        <h1>Fill Out the Survey</h1>
+        <div class="survey-form-container">
+            <form name="surveyForm" method="POST" onsubmit="return validateForm()">
+                <div class="mb-3">
+                    <label class="form-label">Full Name:</label>
+                    <input type="text" name="full_name" class="form-control" placeholder="Enter your full name">
                 </div>
-                <img src="{{ url_for('static', filename='Pizza2.jpg') }}" class="food-image" alt="Pizza">
-            </div>
-            <div class="mb-3 d-flex align-items-center">
-                <div class="form-check me-3">
-                    <input type="checkbox" class="form-check-input" id="pasta" name="favorite_foods" value="Pasta">
-                    <label class="form-check-label" for="pasta">Pasta</label>
+                <div class="mb-3">
+                    <label class="form-label">Email:</label>
+                    <input type="email" name="email" class="form-control" placeholder="Enter your email">
                 </div>
-                <img src="{{ url_for('static', filename='Pasta2.jpg') }}" class="food-image" alt="Pasta">
-            </div>
-            <div class="mb-3 d-flex align-items-center">
-                <div class="form-check me-3">
-                    <input type="checkbox" class="form-check-input" id="pap_and_wors" name="favorite_foods" value="Pap and Wors">
-                    <label class="form-check-label" for="pap_and_wors">Pap and Wors</label>
+                <div class="mb-3">
+                    <label class="form-label">Date of Birth:</label>
+                    <input type="date" name="date_of_birth" class="form-control">
                 </div>
-                <img src="{{ url_for('static', filename='PaW1.jpg') }}" class="food-image" alt="Pap and Wors">
-            </div>
-            <div class="mb-3 d-flex align-items-center">
-                <div class="form-check me-3">
-                    <input type="checkbox" class="form-check-input" id="other" name="favorite_foods" value="Other">
-                    <label class="form-check-label" for="other">Other</label>
+                <div class="mb-3">
+                    <label class="form-label">Contact Number:</label>
+                    <input type="text" name="contact_number" class="form-control" placeholder="Enter your contact number">
                 </div>
-            </div>
-            <h3>Lifestyle Preferences</h3>
-            <p>Please rate your level of agreement (1 = Strongly Agree, 5 = Strongly Disagree):</p>
-            <div class="mb-3">
-                <label class="form-label">I like to watch movies</label><br>
-                {% for i in range(1, 6) %}
-                    <div class="form-check form-check-inline">
-                        <input type="radio" class="form-check-input" name="movies_rating" id="movies_{{ i }}" value="{{ i }}" required>
-                        <label class="form-check-label" for="movies_{{ i }}">{{ i }}</label>
+                <div class="mb-3">
+                    <label class="form-label">Favorite Foods:</label>
+                    <div class="form-check">
+                        <input type="checkbox" name="favorite_foods" value="Pizza" class="form-check-input">
+                        <label class="form-check-label">Pizza</label>
+                        <img src="{{ url_for('static', filename='Pizza2.jpg') }}" class="food-image" alt="Pizza">
                     </div>
-                {% endfor %}
-            </div>
-            <div class="mb-3">
-                <label class="form-label">I like to listen to radio</label><br>
-                {% for i in range(1, 6) %}
-                    <div class="form-check form-check-inline">
-                        <input type="radio" class="form-check-input" name="radio_rating" id="radio_{{ i }}" value="{{ i }}" required>
-                        <label class="form-check-label" for="radio_{{ i }}">{{ i }}</label>
+                    <div class="form-check">
+                        <input type="checkbox" name="favorite_foods" value="Pasta" class="form-check-input">
+                        <label class="form-check-label">Pasta</label>
+                        <img src="{{ url_for('static', filename='Pasta2.jpg') }}" class="food-image" alt="Pasta">
                     </div>
-                {% endfor %}
-            </div>
-            <div class="mb-3">
-                <label class="form-label">I like to eat out</label><br>
-                {% for i in range(1, 6) %}
-                    <div class="form-check form-check-inline">
-                        <input type="radio" class="form-check-input" name="eating_out_rating" id="eating_out_{{ i }}" value="{{ i }}" required>
-                        <label class="form-check-label" for="eating_out_{{ i }}">{{ i }}</label>
+                    <div class="form-check">
+                        <input type="checkbox" name="favorite_foods" value="Pap and Wors" class="form-check-input">
+                        <label class="form-check-label">Pap and Wors</label>
+                        <img src="{{ url_for('static', filename='PaW1.jpg') }}" class="food-image" alt="Pap and Wors">
                     </div>
-                {% endfor %}
-            </div>
-            <div class="mb-3">
-                <label class="form-label">I like to watch TV</label><br>
-                {% for i in range(1, 6) %}
-                    <div class="form-check form-check-inline">
-                        <input type="radio" class="form-check-input" name="tv_rating" id="tv_{{ i }}" value="{{ i }}" required>
-                        <label class="form-check-label" for="tv_{{ i }}">{{ i }}</label>
+                    <div class="form-check">
+                        <input type="checkbox" name="favorite_foods" value="Other" class="form-check-input">
+                        <label class="form-check-label">Other</label>
+                        <img src="{{ url_for('static', filename='Other2.jpg') }}" class="food-image" alt="Other">
                     </div>
-                {% endfor %}
-            </div>
-            <button type="submit" class="btn btn-dark">Submit</button>
-        </form>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">How much do you enjoy these activities? (1 = Not at all, 5 = Very much)</label>
+                    <div>
+                        <p>Watching Movies:</p>
+                        {% for i in range(1, 6) %}
+                            <div class="form-check form-check-inline">
+                                <input type="radio" name="movies_rating" value="{{ i }}" class="form-check-input">
+                                <label class="form-check-label">{{ i }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div>
+                        <p>Listening to Radio:</p>
+                        {% for i in range(1, 6) %}
+                            <div class="form-check form-check-inline">
+                                <input type="radio" name="radio_rating" value="{{ i }}" class="form-check-input">
+                                <label class="form-check-label">{{ i }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div>
+                        <p>Eating Out:</p>
+                        {% for i in range(1, 6) %}
+                            <div class="form-check form-check-inline">
+                                <input type="radio" name="eating_out_rating" value="{{ i }}" class="form-check-input">
+                                <label class="form-check-label">{{ i }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div>
+                        <p>Watching TV:</p>
+                        {% for i in range(1, 6) %}
+                            <div class="form-check form-check-inline">
+                                <div class="form-check">
+                                    <input type="radio" name="tv_rating" value="{{ i }}" class="form-check-input">
+                                    <label class="form-check-label">{{ i }}</label>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-brown">Submit</button>
+                {% if submitted %}
+                    <div class="alert alert-success" role="alert">
+                        Thank you for submitting!
+                    </div>
+                {% endif %}
+            </form>
+        </div>
     </div>
-    <script>
-        function validateForm() {
-            const fullName = document.getElementById('full_name').value;
-            const email = document.getElementById('email').value;
-            const dateOfBirth = document.getElementById('date_of_birth').value;
-            const contactNumber = document.getElementById('contact_number').value;
-            const today = new Date();
-            const dob = new Date(dateOfBirth);
-            const age = (today - dob) / (1000 * 60 * 60 * 24 * 365.25);
-
-            if (!fullName || !email || !dateOfBirth || !contactNumber) {
-                alert('All personal details fields are required.');
-                return false;
-            }
-
-            if (isNaN(dob) || age < 5 || age > 120) {
-                alert('Age must be between 5 and 120 years.');
-                return false;
-            }
-
-            const ratings = ['movies_rating', 'radio_rating', 'eating_out_rating', 'tv_rating'];
-            for (let rating of ratings) {
-                if (!document.querySelector(`input[name="${rating}"]:checked`)) {
-                    alert('Please select a rating for all lifestyle preferences.');
-                    return false;
-                }
-            }
-
-            return true;
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.com/npm/bootstrap@5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
